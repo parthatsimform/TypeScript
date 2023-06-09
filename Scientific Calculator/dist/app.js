@@ -34,26 +34,12 @@ function evaluate() {
         process.innerHTML = output.value;
         if (output.value.includes("//") ||
             !output.value.charAt(output.value.indexOf("/") + 1)) {
-            checkNaN({ res: Number(output.value), err: error });
+            checkNaN({ res: Number(output.value), err: "Invalid use of '/'" });
         }
         else if (output.value.includes("%")) {
-            let op1 = Number(output.value.split(" % ")[0]);
-            let op2 = Number(output.value.split(" % ")[1]);
+            let op1 = Number(eval(output.value.split(" % ")[0]));
+            let op2 = Number(eval(output.value.split(" % ")[1]));
             checkNaN({ res: op1 % op2, err: error });
-        }
-        else if (output.value.includes("3√")) {
-            let op = Number(output.value.split("√")[1]);
-            checkNaN({
-                res: Math.cbrt(Function("return " + op)()),
-                err: error,
-            });
-        }
-        else if (output.value.includes("√")) {
-            let op = Number(output.value.split("√")[1]);
-            checkNaN({
-                res: Math.sqrt(Function("return " + op)()),
-                err: error,
-            });
         }
         else if (output.value.includes("e**")) {
             const res = output.value.replace(/e/g, "2.718");
@@ -139,10 +125,7 @@ Array.from(btns).forEach((btn) => {
                 target.innerHTML = target.value;
                 break;
             case "fe":
-                checkNaN({
-                    res: Number(parseFloat(output.value).toExponential()),
-                    err: error,
-                });
+                output.value = parseFloat(output.value).toExponential();
                 break;
             case "mc":
                 memory = 0;
@@ -231,17 +214,16 @@ Array.from(btns).forEach((btn) => {
                 }
                 break;
             case "cubeRoot":
-                if (output.value === "0") {
-                    output.value = "3√";
-                }
-                else {
-                    output.value += "3√";
-                }
+                process.innerHTML = "3√" + output.value;
+                checkNaN({
+                    res: Math.cbrt(Function("return " + output.value)()),
+                    err: error,
+                });
                 break;
             case "cube":
-                process.innerHTML = output.value + "<sup>3</sup>";
+                process.innerHTML = "(" + output.value + ")<sup>3</sup>";
                 checkNaN({
-                    res: Math.pow(Number(output.value), 3),
+                    res: Math.pow(Number(eval(output.value)), 3),
                     err: error,
                 });
                 break;
@@ -284,23 +266,23 @@ Array.from(btns).forEach((btn) => {
                 }
                 break;
             case "square":
-                process.innerHTML = output.value + "<sup>2</sup>";
+                process.innerHTML = "(" + output.value + ")<sup>2</sup>";
                 checkNaN({
-                    res: Math.pow(Number(output.value), 2),
+                    res: Math.pow(Number(eval(output.value)), 2),
                     err: error,
                 });
                 break;
             case "oneUpon":
-                process.innerHTML = "1/" + output.value;
+                process.innerHTML = "1/(" + output.value + ")";
                 checkNaN({
-                    res: 1 / Number(output.value),
+                    res: 1 / Number(eval(output.value)),
                     err: error,
                 });
                 break;
             case "mod":
                 process.innerHTML = "|" + output.value + "|";
                 checkNaN({
-                    res: Math.abs(Number(output.value)),
+                    res: Math.abs(Number(eval(output.value))),
                     err: error,
                 });
                 break;
@@ -322,12 +304,11 @@ Array.from(btns).forEach((btn) => {
                 output.value += " % ";
                 break;
             case "squareRoot":
-                if (output.value === "0") {
-                    output.value = "√";
-                }
-                else {
-                    output.value += "√";
-                }
+                process.innerHTML = "2√" + output.value;
+                checkNaN({
+                    res: Math.sqrt(Function("return " + output.value)()),
+                    err: error,
+                });
                 break;
             case "factorial":
                 calcFactorial();
@@ -350,16 +331,16 @@ Array.from(btns).forEach((btn) => {
                 }
                 break;
             case "loge":
-                process.innerHTML = "log<sub>e</sub>" + output.value;
+                process.innerHTML = "log<sub>e</sub>(" + output.value + ")";
                 checkNaN({
-                    res: Math.log(Number(output.value)),
+                    res: Math.log(Number(eval(output.value))),
                     err: error,
                 });
                 break;
             case "ln":
-                process.innerHTML = "ln" + output.value;
+                process.innerHTML = "ln(" + output.value + ")";
                 checkNaN({
-                    res: Math.log2(Number(output.value)),
+                    res: Math.log2(Number(eval(output.value))),
                     err: error,
                 });
                 break;
